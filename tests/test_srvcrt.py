@@ -411,6 +411,8 @@ class RuntimeTests(unittest.TestCase):
             with (
                 patch("srvcrt.runtime._host_jdk_platform",
                       return_value=("linux", "x64", "linux", "x86", "tar.gz")),
+                patch("srvcrt.runtime._java_major",
+                      side_effect=lambda cmd: 17 if cmd == "java" else 21),
                 patch("srvcrt.runtime._get_json", return_value=[{
                     "binary": {"package": {
                         "link": "https://example.org/OpenJDK21.tar.gz",

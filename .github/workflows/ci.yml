@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    name: Test & Build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux-x86_64
+            os: ubuntu-24.04
+          - target: linux-arm64
+            os: ubuntu-24.04-arm
+          - target: macos-arm64
+            os: macos-15
+          - target: macos-x86_64
+            os: macos-15-intel
+          - target: windows-x86_64
+            os: windows-2022
+          - target: windows-arm64
+            os: windows-11-arm
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run unit tests
+        shell: bash
+        run: PYTHONPATH=src python -m unittest discover -s tests -v
+      - name: Build and verify standalone binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip pyinstaller
+          pyinstaller --onefile --clean --paths src --name srvcrt src/srvcrt/__main__.py
+          if [[ -f dist/srvcrt.exe ]]; then
+            ./dist/srvcrt.exe --help >/dev/null
+          else
+            ./dist/srvcrt --help >/dev/null
+          fi
