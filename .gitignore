@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.installed.cfg
+*.egg
+build/
+dist/
+wheels/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+ENV/
+
+# OS & Editor
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets & Environment
+.env
+.env.*
+
+# Local test modpacks, scratch files & generated server builds
+/test/
+/test_packs/
+/cli.txt
+/servers/
+/*-server/
+/minecraft-server/
+/jdk/
+.*.tmp-*
+srvcrt-installer.log
+neoforge-installer.jar.log
+forge-installer.jar.log
